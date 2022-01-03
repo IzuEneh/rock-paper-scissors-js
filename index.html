@@ -11,6 +11,48 @@
                 const randomIndex = Math.floor(Math.random() * 3);
                 return moves[randomIndex];
             }
+
+            function playerWins(playerSelection, computerSelection) {
+                switch (playerSelection) { // assuming no ties
+                    case 'rock':
+                        return computerSelection === "scissors" ? true : false;
+                    case 'paper':
+                        return computerSelection === "rock" ? true : false;
+                    case 'scissors':
+                        return computerSelection === "paper" ? true : false;
+                    default: 
+                        console.log(`${playerSelection} is not a valid move`);
+                        return false;
+                }
+            }
+
+            function playRound(playerSelection, computerSelection) {
+                const playerMove = playerSelection.toLowerCase();
+                if(playerMove === computerSelection) return `Tie! you both selected ${computerSelection}`;
+                return (
+                    playerWins(playerMove, computerSelection) ?
+                    `You Win! ${playerMove} beats ${computerSelection}` : 
+                    `You Lose! ${computerSelection} beats ${playerMove}`
+                ) 
+            }
+
+            function game() {
+                let userWinCounter = 0;
+                let computerWinCounter = 0;
+                for (let i = 0; i < 5; i++) {
+                    const userInput = prompt("Please make a move: rock paper or scissors.", "rock");
+                    const computerSelection = computerPlay();
+                    const result = playRound(userInput, computerSelection);
+                    if (result.startsWith('You Win')) userWinCounter++;
+                    if (result.startsWith('You Lose')) computerWinCounter++;
+                    console.log(result);
+                }
+
+                if (userWinCounter > computerWinCounter) console.log("Congratulations! You won ${userWinCounter} out of 5 rounds")
+                else if (computerWinCounter > userWinCounter) console.log("Sorry, Computer Won ${computerWinCounter} out of 5 rounds");
+                else console.log("You tied with the computer.")
+            }
+
         </script>
     </body>
 </html>
