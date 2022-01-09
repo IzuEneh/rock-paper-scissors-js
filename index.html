@@ -5,7 +5,27 @@
         <title>Rock Paper Scissors</title>
     </head>
     <body>
+
+        <button>Rock</button>
+        <button>Paper</button>
+        <button>Scissors</button>
+
+        <div id='result'></div>
+        <div id='playerScore'>Your Score: 0</div>
+        <div id='computerScore'>Computer Score: 0</div>
+        <div id='winner'></div>
         <script>
+            let userWinCounter = 0;
+            let computerWinCounter = 0;
+
+            const resultDiv = document.querySelector('#result');
+            const playerScoreDiv = document.querySelector('#playerScore');
+            const computerScoreDiv = document.querySelector('#computerScore');
+            const winnerDiv = document.querySelector('#winner');
+
+            const buttons  = document.querySelectorAll('button');
+            buttons.forEach(button => button.addEventListener('click', playRound));
+                        
             function computerPlay() {
                 const moves = ["rock", "paper", "scissors"];
                 const randomIndex = Math.floor(Math.random() * 3);
@@ -26,31 +46,38 @@
                 }
             }
 
-            function playRound(playerSelection, computerSelection) {
-                const playerMove = playerSelection.toLowerCase();
-                if(playerMove === computerSelection) return `Tie! you both selected ${computerSelection}`;
-                return (
-                    playerWins(playerMove, computerSelection) ?
-                    `You Win! ${playerMove} beats ${computerSelection}` : 
-                    `You Lose! ${computerSelection} beats ${playerMove}`
-                ) 
+            function playRound(e) {
+                resultDiv.textContent = '';
+                const playerMove = this.textContent.toLowerCase();
+                const computerMove = computerPlay();
+                if(playerMove === computerMove) resultDiv.textContent =  `Tie! you both selected ${computerMove}`;
+                else {
+                    if(playerWins(playerMove, computerMove)) {
+                        resultDiv.textContent = `You Win! ${playerMove} beats ${computerMove}` 
+                        updatePlayerScore();
+                    }else {
+                        resultDiv.textContent =  `You Lose! ${computerMove} beats ${playerMove}`
+                        updateComputerScore();
+                    }
+
+                    checkWinner();
+                } 
             }
 
-            function game() {
-                let userWinCounter = 0;
-                let computerWinCounter = 0;
-                for (let i = 0; i < 5; i++) {
-                    const userInput = prompt("Please make a move: rock paper or scissors.", "rock");
-                    const computerSelection = computerPlay();
-                    const result = playRound(userInput, computerSelection);
-                    if (result.startsWith('You Win')) userWinCounter++;
-                    if (result.startsWith('You Lose')) computerWinCounter++;
-                    console.log(result);
-                }
+            function updateComputerScore() {
+                computerScoreDiv.textContent = `Computer Score: ${++computerWinCounter}`;
+            }
 
-                if (userWinCounter > computerWinCounter) console.log("Congratulations! You won ${userWinCounter} out of 5 rounds")
-                else if (computerWinCounter > userWinCounter) console.log("Sorry, Computer Won ${computerWinCounter} out of 5 rounds");
-                else console.log("You tied with the computer.")
+            function updatePlayerScore() {
+                playerScoreDiv.textContent = `Your Score: ${++userWinCounter}`;
+            }
+
+            function checkWinner() {
+                if(userWinCounter > 4 || computerWinCounter > 4) {
+                    winnerDiv.textContent = (userWinCounter > computerWinCounter) ?
+                        `Congratulations! You won ${userWinCounter}, you were the first to 5 wins` : 
+                        `Sorry, Computer Won ${computerWinCounter}, they beat you to 5 wins`;
+                }
             }
 
         </script>
